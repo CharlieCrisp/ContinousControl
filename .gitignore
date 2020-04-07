@@ -212,3 +212,6 @@ dmypy.json
 
 # Unity environment
 Reacher.app
+unity-environment.log
+
+.idea
