@@ -1,16 +1,21 @@
 import numpy as np
 import torch
 import torch.optim as optim
+import torch.nn as nn
+
+from ppo_continuous_control.policy_nn import PolicyNetwork
 
 
 class PPOAgent:
-    def __init__(self, num_agents, action_size, epsilon=0.1, learning_rate=5e-4):
+    def __init__(self, num_agents, state_size, action_size, epsilon=0.1, learning_rate=5e-4):
         self.action_size = action_size
         self.num_agents = num_agents
         self.epsilon = epsilon
+        self.model: nn.Module = PolicyNetwork(state_size, action_size, seed=0)
         self.optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
 
     def act(self, state, train=True):
+        #  TODO
         actions = np.random.randn(self.num_agents, self.action_size)
         actions = np.clip(actions, -1, 1)
         return actions

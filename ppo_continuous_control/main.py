@@ -15,7 +15,7 @@ def main(output_file, n_rollouts):
     brain = env.brains[brain_name]
 
     print("Initialising PPO Agent")
-    agent = PPOAgent(len(env_info.agents), brain.vector_action_space_size)
+    agent = PPOAgent(len(env_info.agents), brain.vector_observation_space_size, brain.vector_action_space_size)
     batch_size = 20
     solver = Solver()
 
