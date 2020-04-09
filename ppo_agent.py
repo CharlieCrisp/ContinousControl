@@ -1,6 +1,12 @@
 import numpy as np
 
 
+def calculate_future_rewards(rewards: np.ndarray):
+    cumulative_score = rewards.cumsum()
+    final_score = cumulative_score[cumulative_score.size - 1]
+    return final_score - cumulative_score + rewards
+
+
 class PPOAgent:
 
     def __init__(self, num_agents, action_size):
@@ -13,6 +19,7 @@ class PPOAgent:
         return actions
 
     def learn(self, states, actions, rewards, next_states, dones):
+        future_rewards = calculate_future_rewards(rewards)
         return
 
     def save_agent_state(self, output_file):
