@@ -1,5 +1,5 @@
 class Solver:
-    def record_trajectory(self, trajectory):
+    def record_rewards(self, rewards):
         pass
 
     def is_solved(self) -> bool:

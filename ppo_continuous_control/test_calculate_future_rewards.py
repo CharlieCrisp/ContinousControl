@@ -1,6 +1,6 @@
 import numpy as np
 
-from ppo_agent import calculate_future_rewards
+from ppo_continuous_control.ppo_algorithm import calculate_future_rewards
 
 
 def test_calculate_future_rewards():
