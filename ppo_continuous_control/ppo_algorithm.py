@@ -84,7 +84,6 @@ def ppo(
             agent, env, brain_name, env_info
         )
         new_future_rewards = calculate_future_rewards(new_rewards).to(device)
-        #  TODO normalise rewards
         states.append(new_states)
         actions.append(new_actions)
         future_rewards.append(new_future_rewards)
@@ -92,8 +91,10 @@ def ppo(
         record_rewards(new_future_rewards, new_rewards, progress_trackers, solver)
 
         if i % batch_size:
+            rewards = torch.cat(future_rewards)
+            rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-5)
             agent.learn(
-                torch.cat(states), torch.cat(actions), torch.cat(future_rewards)
+                torch.cat(states), torch.cat(actions), rewards
             )
             states.clear()
             actions.clear()
