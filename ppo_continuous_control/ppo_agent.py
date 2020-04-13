@@ -54,7 +54,7 @@ class PPOAgent:
         states: torch.Tensor,
         actions: torch.Tensor,
         future_rewards,
-        num_learning_iterations=10,
+        num_learning_iterations=30,
     ):
         actions = actions.detach()
         states = states.detach()
@@ -87,17 +87,12 @@ class PPOAgent:
             surr1 = clipped_probability_ratio * advantages
             surr2 = probability_ratio * advantages
 
-            loss = -(torch.min(surr1, surr2))
+            loss = -(torch.min(surr1, surr2) + 0.01 * new_entropies)
 
             self.actor_optimizer.zero_grad()
             loss.mean().backward()
             self.actor_optimizer.step()
         self.old_actor.load_state_dict(self.actor.state_dict())
-
-
-    def get_advantages(self):
-        pass
-
 
     def save_agent_state(self, output_file):
         torch.save(self.actor.state_dict(), output_file)

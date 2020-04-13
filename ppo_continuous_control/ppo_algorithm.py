@@ -68,7 +68,7 @@ def _collect_trajectory(
 
 def record_rewards(new_future_rewards, new_rewards, progress_trackers, solver):
     solver.record_rewards(new_rewards)
-    score = new_future_rewards[0]
+    score = new_rewards.sum() / 20
     if isinstance(progress_trackers, list):
         for tracker in progress_trackers:
             tracker.record_score(score)
@@ -106,7 +106,6 @@ def ppo(
         states.append(new_states)
         actions.append(new_actions)
         future_rewards.append(new_future_rewards)
-
         record_rewards(new_future_rewards, new_rewards, progress_trackers, solver)
 
         if i != 0 and i % batch_size == 0:

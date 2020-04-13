@@ -20,7 +20,7 @@ class ScoreGraphPlotter(ProgressTracker):
         self.times = []
         self.fig, self.ax = plt.subplots()
         self.ax.set_xlabel("Episode number")
-        self.ax.set_ylabel("Agent score")
+        self.ax.set_ylabel("Average Agent score")
         (self.line,) = self.ax.plot(self.times, self.scores)
 
     def __draw(self):
