@@ -28,7 +28,7 @@ class ScoreGraphPlotter(ProgressTracker):
             self.ax.set_xlim(min(self.times), max(self.times))
 
         lower_score_bound = self.score_min or min(self.scores)
-        upper_score_bound = self.score_max or max(self.scores)
+        upper_score_bound = max(self.score_max or 1, max(self.scores))
         if lower_score_bound != upper_score_bound:
             self.ax.set_ylim(lower_score_bound, upper_score_bound)
 
