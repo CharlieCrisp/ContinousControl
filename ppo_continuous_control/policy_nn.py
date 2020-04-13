@@ -69,13 +69,15 @@ class Actor(nn.Module):
         action_distribution = self.__get_action_distribution(action_means, action_stds)
         return action_distribution.sample().detach()
 
-    def log_probability_and_entropy_of_action(self, states, actions) -> Tuple[torch.Tensor, torch.Tensor]:
+    def log_probability_and_entropy_of_action(
+        self, states, actions
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
         action_means, action_stds = self.actor(states)
         action_distribution = self.__get_action_distribution(action_means, action_stds)
 
         return (
             action_distribution.log_prob(actions).double(),
-            action_distribution.entropy()
+            action_distribution.entropy(),
         )
 
     def forward(self, state):

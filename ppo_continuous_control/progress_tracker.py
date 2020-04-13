@@ -1,4 +1,6 @@
 import abc
+import pandas as pd
+import numpy as np
 from matplotlib import pyplot as plt
 from progressbar import ProgressBar
 
@@ -22,6 +24,7 @@ class ScoreGraphPlotter(ProgressTracker):
         self.ax.set_xlabel("Episode number")
         self.ax.set_ylabel("Average Agent score")
         (self.line,) = self.ax.plot(self.times, self.scores)
+        (self.rolling_window_line,) = self.ax.plot(self.times, self.scores)
 
     def __draw(self):
         if len(self.times) > 1:
@@ -32,11 +35,19 @@ class ScoreGraphPlotter(ProgressTracker):
         if lower_score_bound != upper_score_bound:
             self.ax.set_ylim(lower_score_bound, upper_score_bound)
 
+        rolling = pd.Series(self.scores).rolling(10, center=True).mean().fillna(0)
+        if len(rolling) >= 10:
+            self.rolling_window_line.set_xdata(self.times[:-4])
+            self.rolling_window_line.set_ydata(rolling[:-4])
+
         self.line.set_xdata(self.times)
         self.line.set_ydata(self.scores)
 
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
+
+        if np.array(self.scores[-10:]).mean() > 30:
+            plt.savefig("solved_agent.png")
 
     def record_score(self, score):
         self.scores.append(score)

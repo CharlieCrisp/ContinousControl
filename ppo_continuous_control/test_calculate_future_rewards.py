@@ -52,14 +52,7 @@ def test_calculate_future_rewards_when_there_are_multiple_trajectories():
 
     gamma = 0.99
     expected_discounted_rewards = torch.tensor(
-        [
-            1 * gamma,
-            1,
-            0,
-            1 + 1 * gamma + 1 * gamma ** 2,
-            1 + 1 * gamma,
-            1,
-        ],
+        [1 * gamma, 1, 0, 1 + 1 * gamma + 1 * gamma ** 2, 1 + 1 * gamma, 1,],
         dtype=torch.float64,
     )
 

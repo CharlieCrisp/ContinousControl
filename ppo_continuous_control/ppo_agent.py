@@ -18,7 +18,7 @@ class PPOAgent:
         state_size: int,
         action_size: int,
         epsilon=0.2,
-        learning_rate=0.0003,
+        learning_rate=0.0006,
     ):
         self.action_size = action_size
         self.num_agents = num_agents
@@ -42,7 +42,9 @@ class PPOAgent:
                        The output will be treated as a constant when gradients are calculated.
         :return: The probabilities of taking the given actions from the given states
         """
-        probs, entropies = self.actor.log_probability_and_entropy_of_action(states, actions)
+        probs, entropies = self.actor.log_probability_and_entropy_of_action(
+            states, actions
+        )
 
         if detach:
             probs = probs.detach()
@@ -54,13 +56,16 @@ class PPOAgent:
         states: torch.Tensor,
         actions: torch.Tensor,
         future_rewards,
-        num_learning_iterations=30,
+        num_learning_iterations=80,
     ):
         actions = actions.detach()
         states = states.detach()
         future_rewards = future_rewards.detach()
 
-        starting_log_probabilities, _ = self._log_probabilities_and_entropies_of_actions(
+        (
+            starting_log_probabilities,
+            _,
+        ) = self._log_probabilities_and_entropies_of_actions(
             states, actions, detach=True
         )
 
@@ -76,9 +81,11 @@ class PPOAgent:
         for i in range(num_learning_iterations):
             (
                 new_log_probabilities,
-                new_entropies
+                new_entropies,
             ) = self._log_probabilities_and_entropies_of_actions(states, actions)
-            probability_ratio = torch.exp(new_log_probabilities - starting_log_probabilities.detach())
+            probability_ratio = torch.exp(
+                new_log_probabilities - starting_log_probabilities.detach()
+            )
 
             advantages = future_rewards - state_values.detach()
             clipped_probability_ratio = probability_ratio.clamp(
@@ -87,7 +94,7 @@ class PPOAgent:
             surr1 = clipped_probability_ratio * advantages
             surr2 = probability_ratio * advantages
 
-            loss = -(torch.min(surr1, surr2) + 0.01 * new_entropies)
+            loss = -(torch.min(surr1, surr2) + 0.04 * new_entropies)
 
             self.actor_optimizer.zero_grad()
             loss.mean().backward()

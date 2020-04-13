@@ -52,7 +52,9 @@ def _collect_trajectory(
     single_agent_dones = np.full((num_steps,), False, dtype=bool)
     single_agent_dones[num_steps - 1] = True
 
-    all_agent_dones = np.tile(single_agent_dones, num_agents).reshape(num_agents, num_steps)
+    all_agent_dones = np.tile(single_agent_dones, num_agents).reshape(
+        num_agents, num_steps
+    )
 
     states = torch.stack(trajectory_states).permute(dims=[1, 0, 2])
     actions = torch.stack(trajectory_actions).permute(dims=[1, 0, 2])
@@ -66,7 +68,7 @@ def _collect_trajectory(
     )
 
 
-def record_rewards(new_future_rewards, new_rewards, progress_trackers, solver):
+def record_rewards(new_rewards, progress_trackers, solver):
     solver.record_rewards(new_rewards)
     score = new_rewards.sum() / 20
     if isinstance(progress_trackers, list):
@@ -106,7 +108,7 @@ def ppo(
         states.append(new_states)
         actions.append(new_actions)
         future_rewards.append(new_future_rewards)
-        record_rewards(new_future_rewards, new_rewards, progress_trackers, solver)
+        record_rewards(new_rewards, progress_trackers, solver)
 
         if i != 0 and i % batch_size == 0:
             agent.learn(
@@ -117,6 +119,7 @@ def ppo(
             future_rewards.clear()
 
         if solver.is_solved():
-            print(f"Solved the environment in ${i} rollouts")
+            print(f"Solved the environment in {i} rollouts")
             agent.save_agent_state(solved_agent_output_file)
+
             return

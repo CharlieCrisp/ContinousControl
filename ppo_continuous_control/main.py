@@ -105,7 +105,7 @@ if __name__ == "__main__":
         "--algo",
         dest="algorithm",
         help="The algorithm to use to train agent. Options: ppo, ddpg",
-        default="ppo"
+        default="ppo",
     )
     args = args_parser.parse_args()
 
