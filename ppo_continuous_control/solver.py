@@ -1,4 +1,5 @@
 import abc
+from collections import deque
 
 
 class Solver(abc.ABC):
@@ -11,14 +12,14 @@ class Solver(abc.ABC):
         pass
 
 
-class NeverSolved(Solver):
-    def __init__(self):
-        self.latest_rewards = None
+class AverageScoreSolver(Solver):
+    def __init__(self, num_agents, solved_score, solved_score_period):
+        self.latest_rewards = deque(maxlen=solved_score_period)
+        self.num_agents = num_agents
+        self.solved_score = solved_score
 
     def record_rewards(self, rewards):
-        self.latest_rewards = rewards
+        self.latest_rewards.append(rewards)
 
     def is_solved(self):
-        if self.latest_rewards is not None:
-            return (self.latest_rewards.sum() / 20) > 30
-        return False
+        return (sum(self.latest_rewards) / self.num_agents) > self.solved_score

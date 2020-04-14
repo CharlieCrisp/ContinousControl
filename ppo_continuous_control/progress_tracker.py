@@ -12,13 +12,17 @@ class ProgressTracker:
 
 
 class ScoreGraphPlotter(ProgressTracker):
-    def __init__(self, score_min=None, score_max=None):
+    def __init__(
+        self, score_min=None, score_max=None, solved_score=None, solved_score_period=100
+    ):
         super(ScoreGraphPlotter, self).__init__()
 
         plt.ion()
         self.scores = []
         self.score_min = score_min
         self.score_max = score_max
+        self.solved_score = solved_score
+        self.solved_score_period = solved_score_period
         self.times = []
         self.fig, self.ax = plt.subplots()
         self.ax.set_xlabel("Episode number")
@@ -46,8 +50,13 @@ class ScoreGraphPlotter(ProgressTracker):
         self.fig.canvas.draw()
         self.fig.canvas.flush_events()
 
-        if np.array(self.scores[-10:]).mean() > 30:
-            plt.savefig("solved_agent.png")
+        if (
+            np.array(self.scores[-self.solved_score_period :]).mean()
+            > self.solved_score
+        ):
+            plt.savefig(
+                f"solved_agent_{len(self.scores) - self.solved_score_period}_episodes.png"
+            )
 
     def record_score(self, score):
         self.scores.append(score)

@@ -10,13 +10,13 @@ from ppo_continuous_control.progress_tracker import (
     ScoreGraphPlotter,
     ProgressBarTracker,
 )
-from ppo_continuous_control.solver import NeverSolved
+from ppo_continuous_control.solver import AverageScoreSolver
 
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "True"
 
 
-def main(output_file, n_rollouts, use_multiple_agents, algorithm):
+def main(output_file, n_rollouts, use_multiple_agents, algorithm, saved_weights):
     print("Creating Unity environment for Reacher app")
     env = (
         UnityEnvironment(file_name="ReacherMultiple.app")
@@ -34,10 +34,14 @@ def main(output_file, n_rollouts, use_multiple_agents, algorithm):
     print(f"Using state size {state_size} and action size {action_size}")
 
     num_agents = len(env_info.agents)
-    agent = PPOAgent(num_agents, state_size, action_size)
+    agent = PPOAgent(num_agents, state_size, action_size, saved_weights)
     batch_size = 1
-    solver = NeverSolved()
-    plotter = ScoreGraphPlotter(score_min=0, score_max=12)
+    solver = AverageScoreSolver(
+        solved_score=30, solved_score_period=100, num_agents=num_agents
+    )
+    plotter = ScoreGraphPlotter(
+        score_min=0, score_max=12, solved_score=30, solved_score_period=100
+    )
     progress_bar = ProgressBarTracker(n_rollouts)
 
     if algorithm == "ppo":
@@ -107,6 +111,33 @@ if __name__ == "__main__":
         help="The algorithm to use to train agent. Options: ppo, ddpg",
         default="ppo",
     )
+    args_parser.add_argument(
+        "--actor-weights",
+        dest="actor_weights",
+        help="The filename of saved weights to use as the starting state of an agents actor. "
+        + "Note: you must also pass in --critic-weights",
+        default=None,
+    )
+
+    args_parser.add_argument(
+        "--critic-weights",
+        dest="critic_weights",
+        help="The filename of saved weights to use as the starting state of an agents critic. "
+        + "Note: you must also pass in --actor-weights",
+        default=None,
+    )
     args = args_parser.parse_args()
 
-    main(args.filename, args.n_rollouts, args.use_multiple_agents, args.algorithm)
+    saved_weights = (
+        (args.actor_weights, args.critic_weights)
+        if args.actor_weights is not None and args.critic_weights is not None
+        else None
+    )
+
+    main(
+        args.filename,
+        args.n_rollouts,
+        args.use_multiple_agents,
+        args.algorithm,
+        saved_weights,
+    )

@@ -19,6 +19,7 @@ class PPOAgent:
         action_size: int,
         epsilon=0.2,
         learning_rate=0.0006,
+        saved_weights=None,
     ):
         self.action_size = action_size
         self.num_agents = num_agents
@@ -30,6 +31,11 @@ class PPOAgent:
         self.critic = Critic(state_size).to(device)
         self.actor_optimizer = optim.Adam(self.actor.parameters(), lr=learning_rate)
         self.critic_optimizer = optim.Adam(self.critic.parameters(), lr=learning_rate)
+
+        if saved_weights is not None:
+            actor_file, critic_file = saved_weights
+            self.actor.load_state_dict(torch.load(actor_file))
+            self.critic.load_state_dict(torch.load(critic_file))
 
     def act(self, state: torch.Tensor) -> np.ndarray:
         return self.actor.act(state).detach()
@@ -101,5 +107,6 @@ class PPOAgent:
             self.actor_optimizer.step()
         self.old_actor.load_state_dict(self.actor.state_dict())
 
-    def save_agent_state(self, output_file):
-        torch.save(self.actor.state_dict(), output_file)
+    def save_agent_state(self):
+        torch.save(self.actor.state_dict(), "saved_actor.pth")
+        torch.save(self.critic.state_dict(), "saved_critic.pth")
