@@ -40,3 +40,17 @@ optimizer = Adam(lr=0.0006, betas=(0.9, 0.999))
 num_rollouts_before_training = 1 # 1000 * 20 timesteps of data
 gamma = 0.99
 ```
+
+## Results
+
+## Future work
+I was not overly impressed by the performance of PPO even though I did a fair amount of hyperparameter tuning.
+I'd like to implement the [DDPG algorithm](https://spinningup.openai.com/en/latest/algorithms/ddpg.html) next to compare 
+its performance.
+Currently the user can select ddpg as a training option in the script but it is not implemented. 
+
+Another possibility with this work is to combine the layers of the critic and the actor. 
+They curently share no layers and I would intuitively expect this to waste effort learning similar representations of 
+the important features of the state space.
+Combining the actor and critic in the same network may help this although introduces the complexity of having to factor
+in the critic loss function into the surrogate.
