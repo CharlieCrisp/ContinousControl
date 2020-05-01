@@ -19,7 +19,7 @@ class AverageScoreSolver(Solver):
         self.solved_score = solved_score
 
     def record_rewards(self, rewards):
-        self.latest_rewards.append(rewards)
+        self.latest_rewards.append(sum(rewards))
 
     def is_solved(self):
-        return (sum(self.latest_rewards) / self.num_agents) > self.solved_score
+        return (sum(self.latest_rewards) / (self.num_agents * len(self.latest_rewards))) > self.solved_score

@@ -34,7 +34,7 @@ def main(output_file, n_rollouts, use_multiple_agents, algorithm, saved_weights)
     print(f"Using state size {state_size} and action size {action_size}")
 
     num_agents = len(env_info.agents)
-    agent = PPOAgent(num_agents, state_size, action_size, saved_weights)
+    agent = PPOAgent(num_agents, state_size, action_size, saved_weights=saved_weights)
     batch_size = 1
     solver = AverageScoreSolver(
         solved_score=30, solved_score_period=100, num_agents=num_agents
@@ -56,7 +56,6 @@ def main(output_file, n_rollouts, use_multiple_agents, algorithm, saved_weights)
             n_rollouts,
             batch_size,
             solver,
-            output_file,
             [plotter, progress_bar],
         )
     elif algorithm == "ddpg":
@@ -93,8 +92,8 @@ if __name__ == "__main__":
         default="trained_agent_weights.pth",
     )
     args_parser.add_argument(
-        "--n",
-        type=str,
+        "-n",
+        type=int,
         dest="n_rollouts",
         help="The number of trajectories to collect whilst training",
         default=1000,

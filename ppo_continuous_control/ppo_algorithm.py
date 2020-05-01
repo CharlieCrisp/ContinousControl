@@ -88,7 +88,6 @@ def ppo(
     n_rollouts: int,
     batch_size: int,
     solver: Solver,
-    solved_agent_output_file: str,
     progress_trackers: Union[List[ProgressTracker], ProgressTracker] = None,
 ):
     states, actions, future_rewards = [], [], []
@@ -120,6 +119,4 @@ def ppo(
 
         if solver.is_solved():
             print(f"Solved the environment in {i} rollouts")
-            agent.save_agent_state(solved_agent_output_file)
-
-            return
+            agent.save_agent_state()
