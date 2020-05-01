@@ -43,6 +43,12 @@ gamma = 0.99
 
 ## Results
 
+My agent solved the challenge in 490 episodes. 
+Here are the results:
+![Solved Agent](./solved_agent_490_episodes.png)
+
+The solved agents weights are in the files `saved_actor.pth` and `saved_critic.pth`.
+
 ## Future work
 I was not overly impressed by the performance of PPO even though I did a fair amount of hyperparameter tuning.
 I'd like to implement the [DDPG algorithm](https://spinningup.openai.com/en/latest/algorithms/ddpg.html) next to compare 
