@@ -100,7 +100,7 @@ class PPOAgent:
             surr1 = clipped_probability_ratio * advantages
             surr2 = probability_ratio * advantages
 
-            loss = -(torch.min(surr1, surr2) + 0.07 * new_entropies)
+            loss = -(torch.min(surr1, surr2) + 0.069 * new_entropies)
 
             self.actor_optimizer.zero_grad()
             loss.mean().backward()
