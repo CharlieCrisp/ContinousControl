@@ -31,7 +31,7 @@ critic = nn.Sequential(
     nn.Linear(16, 1),
 )
 # Surrogate
-surr = -(min(clipped_surrogate, norrmal_surrogate) + 0.07 * entropy)
+surr = -(min(clipped_surrogate, norrmal_surrogate) + 0.069 * entropy)
 
 # Hyperparameters
 num_epochs = 80
