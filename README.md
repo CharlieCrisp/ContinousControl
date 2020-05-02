@@ -16,11 +16,20 @@ Env downloads for mac. Do one of the following depending on which :
 ## Running the project
 ```
 conda activate deep-reinforcement-learning
-python -m ppo_continuous_control.main -n 750 --use-multiple-agents
+python -m ppo_continuous_control.train_agent -n 750 --use-multiple-agents
 ```
 
-You use `python -m ppo_continuous_control.main --help` to find out more about the CLI interface including how to specify
+You use `python -m ppo_continuous_control.train_agent --help` to find out more about the CLI interface including how to specify
 which UnityML environment to use to train your agent.
+
+## Seeing results
+Once you have trained agent weights (or if you want to use the checked in weights) you can see how the agent performs as follows:
+```
+python -m ppo_continuous_control.play_game --use-multiple-agents
+```
+```
+python -m ppo_continuous_control.play_game --use-multiple-agents --actor-weights <filepath> --critic-weights <filepath>
+```
 
 ## Running tests
 This repository contains some unit tests. You can run them from the repo root with
